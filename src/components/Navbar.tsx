@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, createSearchParams } from "react-router-dom";
 import {
   Search,
   User,
@@ -19,13 +19,47 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { cartCount } = useCart();
 
+  function buildCatalogLink(filters?: {
+    categories?: string[];
+    subcategories?: string[];
+    vehicles?: string[];
+  }) {
+    if (!filters) return "/catalog";
+
+    const params = new URLSearchParams();
+
+    filters.categories?.forEach((category) => {
+      params.append("category", category);
+    });
+
+    filters.subcategories?.forEach((subcategory) => {
+      params.append("subcategory", subcategory);
+    });
+
+    filters.vehicles?.forEach((vehicle) => {
+      params.append("vehicle", vehicle);
+    });
+
+    const search = params.toString();
+    return search ? `/catalog?${search}` : "/catalog";
+  }
+
   const links = [
     { label: "Startseite", href: "/home" },
     { label: "Katalog", href: "/catalog" },
-    { label: "Motor", href: "/catalog?category=Motor" },
-    { label: "Karosserie", href: "/catalog?category=Aufbau" },
-    { label: "Innenraum", href: "/catalog?category=Aufbau" },
-    { label: "Zubehör", href: "/catalog?category=Zubehör" },
+
+    // correspond exactement à la catégorie de ton Catalog
+    { label: "Motor", href: buildCatalogLink({ categories: ["Motor"] }) },
+
+    // dans tes données de filtres, "Karosserie" n'existe pas comme catégorie
+    // la catégorie réelle correspondante est "Aufbau"
+    { label: "Karosserie", href: buildCatalogLink({ categories: ["Aufbau"] }) },
+
+    // idem : "Innenraum" n'existe pas comme catégorie principale dans ton Catalog
+    // donc on l'envoie vers Aufbau aussi, sans inventer une sous-catégorie
+    { label: "Innenraum", href: buildCatalogLink({ categories: ["Aufbau"] }) },
+
+    { label: "Zubehör", href: buildCatalogLink({ categories: ["Zubehör"] }) },
   ];
 
   const results = useMemo(() => {
@@ -150,7 +184,10 @@ export default function Navbar() {
                             <p className="text-xs mt-1" style={{ color: "#666666" }}>
                               {item.vehicle.join(" • ")}
                             </p>
-                            <p className="text-xs mt-1 line-clamp-2" style={{ color: "#888888" }}>
+                            <p
+                              className="text-xs mt-1 line-clamp-2"
+                              style={{ color: "#888888" }}
+                            >
                               {item.subcategory}
                             </p>
                           </div>
@@ -296,11 +333,19 @@ export default function Navbar() {
             </div>
           )}
 
-          <div className="flex gap-4 pt-2 border-t border-gray-100" style={{ color: "#666666" }}>
+          <div
+            className="flex gap-4 pt-2 border-t border-gray-100"
+            style={{ color: "#666666" }}
+          >
             <Link to="/profile" aria-label="Mein Profil" onClick={() => setMenuOpen(false)}>
               <User size={18} />
             </Link>
-            <Link to="/cart" aria-label="Warenkorb" onClick={() => setMenuOpen(false)} className="relative">
+            <Link
+              to="/cart"
+              aria-label="Warenkorb"
+              onClick={() => setMenuOpen(false)}
+              className="relative"
+            >
               <ShoppingCart size={18} />
               {cartCount > 0 && (
                 <span

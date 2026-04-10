@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Filter, ChevronDown, ShoppingCart } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 type StockStatus = "in_stock" | "out_of_stock" | "coming_soon";
@@ -362,23 +362,85 @@ function getAvailabilityConfig(status: StockStatus) {
 }
 
 export default function Catalog() {
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>([]);
-    const [selectedVehicles, setSelectedVehicles] = useState<string[]>([]);
-    const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
-    const [sortBy, setSortBy] = useState("popular");
-    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
     const { addToCart } = useCart();
 
     const allMainCategories = categoryTree.map((category) => category.title);
+    const allSubcategories = categoryTree.flatMap((group) => group.items);
 
-    function toggleSelection(
-        value: string,
-        setter: React.Dispatch<React.SetStateAction<string[]>>
-    ) {
-        setter((prev) =>
-            prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value]
+    function sanitizeValues(values: string[], allowedValues: string[]) {
+        return values.filter(
+            (value, index, array) =>
+                allowedValues.includes(value) && array.indexOf(value) === index
         );
+    }
+
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
+        sanitizeValues(searchParams.getAll("category"), allMainCategories)
+    );
+
+    const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(() =>
+        sanitizeValues(searchParams.getAll("subcategory"), allSubcategories)
+    );
+
+    const [selectedVehicles, setSelectedVehicles] = useState<string[]>(() =>
+        sanitizeValues(searchParams.getAll("vehicle"), vehicles)
+    );
+
+    const [expandedGroups, setExpandedGroups] = useState<string[]>(() =>
+        categoryTree
+            .filter((group) =>
+                group.items.some((item) => searchParams.getAll("subcategory").includes(item))
+            )
+            .map((group) => group.title)
+    );
+
+    const [sortBy, setSortBy] = useState(
+        searchParams.get("sort") || "popular"
+    );
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+    function updateUrl(
+        categories: string[],
+        subcategories: string[],
+        selectedVehicleList: string[],
+        nextSortBy: string = sortBy
+    ) {
+        const params = new URLSearchParams();
+
+        categories.forEach((category) => params.append("category", category));
+        subcategories.forEach((subcategory) => params.append("subcategory", subcategory));
+        selectedVehicleList.forEach((vehicle) => params.append("vehicle", vehicle));
+
+        if (nextSortBy !== "popular") {
+            params.set("sort", nextSortBy);
+        }
+
+        setSearchParams(params, { replace: true });
+    }
+
+    function toggleArrayValue(list: string[], value: string) {
+        return list.includes(value)
+            ? list.filter((item) => item !== value)
+            : [...list, value];
+    }
+
+    function toggleCategory(value: string) {
+        const next = toggleArrayValue(selectedCategories, value);
+        setSelectedCategories(next);
+        updateUrl(next, selectedSubcategories, selectedVehicles);
+    }
+
+    function toggleSubcategory(value: string) {
+        const next = toggleArrayValue(selectedSubcategories, value);
+        setSelectedSubcategories(next);
+        updateUrl(selectedCategories, next, selectedVehicles);
+    }
+
+    function toggleVehicle(value: string) {
+        const next = toggleArrayValue(selectedVehicles, value);
+        setSelectedVehicles(next);
+        updateUrl(selectedCategories, selectedSubcategories, next);
     }
 
     function toggleExpanded(groupTitle: string) {
@@ -393,6 +455,8 @@ export default function Catalog() {
         setSelectedCategories([]);
         setSelectedSubcategories([]);
         setSelectedVehicles([]);
+        setSortBy("popular");
+        setSearchParams({}, { replace: true });
     }
 
     const activeFiltersCount =
@@ -513,7 +577,7 @@ export default function Catalog() {
                                             <input
                                                 type="checkbox"
                                                 checked={selectedCategories.includes(category)}
-                                                onChange={() => toggleSelection(category, setSelectedCategories)}
+                                                onChange={() => toggleCategory(category)}
                                                 className="mt-1 h-5 w-5 rounded border-gray-300 shrink-0"
                                             />
                                             <span className="text-sm sm:text-base leading-relaxed break-words" style={{ color: "#222222" }}>
@@ -532,7 +596,7 @@ export default function Catalog() {
                                             <input
                                                 type="checkbox"
                                                 checked={selectedVehicles.includes(vehicle)}
-                                                onChange={() => toggleSelection(vehicle, setSelectedVehicles)}
+                                                onChange={() => toggleVehicle(vehicle)}
                                                 className="mt-1 h-5 w-5 rounded border-gray-300 shrink-0"
                                             />
                                             <span className="text-sm sm:text-base leading-relaxed break-words" style={{ color: "#222222" }}>
@@ -554,7 +618,7 @@ export default function Catalog() {
                                             <div key={group.title}>
                                                 <button
                                                     type="button"
-                                                    onClick={() => toggleSelection(group.title, setSelectedCategories)}
+                                                    onClick={() => toggleCategory(group.title)}
                                                     className="text-left text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 transition-colors break-words"
                                                     style={{ color: "#15415a" }}
                                                 >
@@ -569,7 +633,7 @@ export default function Catalog() {
                                                             <button
                                                                 key={item}
                                                                 type="button"
-                                                                onClick={() => toggleSelection(item, setSelectedSubcategories)}
+                                                                onClick={() => toggleSubcategory(item)}
                                                                 className="block w-full text-left text-sm leading-relaxed transition-colors break-words"
                                                                 style={{
                                                                     color: active ? "#15415a" : "#666666",
@@ -610,7 +674,16 @@ export default function Catalog() {
                                 <div className="relative w-full sm:w-[250px]">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
+                                        onChange={(e) => {
+                                            const nextSort = e.target.value;
+                                            setSortBy(nextSort);
+                                            updateUrl(
+                                                selectedCategories,
+                                                selectedSubcategories,
+                                                selectedVehicles,
+                                                nextSort
+                                            );
+                                        }}
                                         className="w-full appearance-none bg-white rounded-xl border px-4 sm:px-5 py-3 sm:py-4 pr-11 sm:pr-12 text-sm sm:text-base outline-none"
                                         style={{
                                             borderColor: "#d9d9d9",
