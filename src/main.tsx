@@ -8,7 +8,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/vewib_website">
       <ScrollToTop />
       <CartProvider>
         <App />
