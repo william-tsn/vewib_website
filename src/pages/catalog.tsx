@@ -439,7 +439,7 @@ export default function Catalog() {
     }, [selectedCategories, selectedSubcategories, selectedVehicles, sortBy]);
 
     return (
-        <div className="min-h-screen font-sans overflow-x-hidden" style={{ backgroundColor: "#f4f5f6" }}>
+        <div className="min-h-screen font-sans overflow-x-hidden pt-16" style={{ backgroundColor: "#f4f5f6" }}>
             <Navbar />
 
             <section className="px-4 sm:px-6 py-12 md:py-20">
