@@ -55,7 +55,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50 py-5">
+    <nav className="w-full bg-white border-b border-gray-100 fixed top-0 z-50 py-5">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
         <Link to="/home" className="flex items-center shrink-0">
           <img src={vewibLogo} alt="Vewib Logo" className="h-8 w-auto" />

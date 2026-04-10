@@ -3,7 +3,7 @@ import vewibLogo from "../assets/vewib.webp";
 
 export default function PublicNavbar() {
     return (
-        <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50 py-5">
+        <nav className="w-full bg-white border-b border-gray-100 fixed top-0 z-50 py-5">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <Link to="/" className="flex items-center">
                     <img src={vewibLogo} alt="Vewib Logo" className="h-8 w-auto" />

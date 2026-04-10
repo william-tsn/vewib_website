@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
     ArrowLeft,
@@ -36,6 +36,12 @@ type Product = {
     productUrl: string;
 };
 
+type ImageMode = "static" | "fixed" | "bottom";
+
+const STICKY_TOP = 112;
+const DESKTOP_BREAKPOINT = 1024;
+const STOP_BEFORE_NEXT_SECTION = 150;
+
 const mockProducts: Product[] = [
     {
         id: 1,
@@ -51,7 +57,8 @@ const mockProducts: Product[] = [
         sku: "113821503-504",
         brand: "VEWIB",
         packaging: "Set (Paar)",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/m/a/marche-pied-noir-gauche-et-droit.jpg",
+        image:
+            "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/m/a/marche-pied-noir-gauche-et-droit.jpg",
         shortDescription:
             "Passgenaues Trittbrett-Set für VW Käfer und Käfer Cabriolet aus 1,1 mm Stahl mit KTL-Beschichtung und originalgetreuem PVC-Belag.",
         longDescription:
@@ -73,7 +80,8 @@ const mockProducts: Product[] = [
         sku: "111998031B",
         brand: "VEWIB",
         packaging: "Set",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/1/1/111998031b.jpg",
+        image:
+            "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/1/1/111998031b.jpg",
         shortDescription:
             "Kompletter VEWIB Zündkabelsatz für Typ-1-Motoren mit PVC-Außenmantel, Kupferkern und 23 cm Zündspulenkabel.",
         longDescription:
@@ -95,7 +103,8 @@ const mockProducts: Product[] = [
         sku: "021998031BQ",
         brand: "VEWIB",
         packaging: "Satz",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/0/2/021998031_1.jpg",
+        image:
+            "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/0/2/021998031_1.jpg",
         shortDescription:
             "Originalgetreuer Zündkabelsatz für Typ-4-Motoren in VW Combi und Transporter T25/T3 von 08/1971 bis 12/1982.",
         longDescription:
@@ -116,7 +125,8 @@ const mockProducts: Product[] = [
         sku: "111498415A",
         brand: "VEWIB",
         packaging: "Kit",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/641x800/9df78eab33525d08d6e5fb8d27136e95/p/h/photoroom-20241014_103249_1_.jpg",
+        image:
+            "https://www.dream-machine.fr/media/catalog/product/cache/30/image/641x800/9df78eab33525d08d6e5fb8d27136e95/p/h/photoroom-20241014_103249_1_.jpg",
         shortDescription:
             "Dichtungssatz für 28-mm-Lenkgetriebe mit zwei Simmerringen und einer Deckeldichtung in deutscher Fertigung.",
         longDescription:
@@ -137,7 +147,8 @@ const mockProducts: Product[] = [
         sku: "111821707-478 / A 111821707-478",
         brand: "VEWIB",
         packaging: "Set (4 Stück)",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x600/9df78eab33525d08d6e5fb8d27136e95/1/1/111821707478.jpg",
+        image:
+            "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x600/9df78eab33525d08d6e5fb8d27136e95/1/1/111821707478.jpg",
         shortDescription:
             "Vorgeschnittener Satz Kotflügeldichtungen in originalgetreuem Beryllgrün für VW Käfer Modelle von 1961 bis 1964.",
         longDescription:
@@ -158,11 +169,12 @@ const mockProducts: Product[] = [
         sku: "211953215D",
         brand: "VEWIB",
         packaging: "Stück",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/641x800/9df78eab33525d08d6e5fb8d27136e95/p/h/photoroom-20241014_113711.jpg",
+        image:
+            "https://www.dream-machine.fr/media/catalog/product/cache/30/image/641x800/9df78eab33525d08d6e5fb8d27136e95/p/h/photoroom-20241014_113711.jpg",
         shortDescription:
             "Modernisiertes 6V Blinkrelais mit 4 Anschlüssen für einen stabilen und zuverlässigen Blinkbetrieb bei klassischen VW Fahrzeugen.",
         longDescription:
-            "Dieses elektronische Blinkrelais ersetzt das ursprüngliche zylindrische Relais durch moderne Komponenten und sorgt für gleichmäßiges Blinken, auch bei eingeschaltetem Licht oder niedriger Drehzahl. Ideal für Fahrzeuge mit 6-Volt-Elektrik.",
+            "Dieses elektronische Blinkrelais ersetzt das ursprüngliche Relais durch moderne Komponenten und sorgt für gleichmäßiges Blinken, auch bei eingeschaltetem Licht oder niedriger Drehzahl. Ideal für Fahrzeuge mit 6-Volt-Elektrik.",
         productUrl:
             "https://www.dream-machine.fr/relais-de-clignotants-electronique-6v-3-1-broches-pour-vehicules-classiques.html",
     },
@@ -207,12 +219,11 @@ function getAvailabilityConfig(status: StockStatus, stock: number) {
 
 function ProductCard({ product }: { product: Product }) {
     const { addToCart } = useCart();
-    const availability = getAvailabilityConfig(product.stockStatus, product.stock);
 
     return (
         <Link
             to={`/product/${product.id}`}
-            className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl min-w-0"
+            className="bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             style={{
                 boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                 border: "1px solid #eeeeee",
@@ -220,19 +231,19 @@ function ProductCard({ product }: { product: Product }) {
         >
             <div className="relative">
                 <div
-                    className="w-full h-56 sm:h-64 lg:h-72 xl:h-80 flex items-center justify-center overflow-hidden"
+                    className="w-full h-52 sm:h-56 flex items-center justify-center overflow-hidden"
                     style={{ backgroundColor: "#f4f5f6" }}
                 >
                     <img
                         src={product.image}
                         alt={product.title}
-                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                        className="w-full h-full object-contain"
                     />
                 </div>
 
                 {product.featured && (
                     <span
-                        className="absolute top-3 sm:top-4 right-3 sm:right-4 text-white text-xs font-semibold px-3 py-1 rounded"
+                        className="absolute top-3 right-3 text-white text-xs font-semibold px-3 py-1 rounded"
                         style={{ backgroundColor: "#15415a" }}
                     >
                         Beliebt
@@ -240,50 +251,38 @@ function ProductCard({ product }: { product: Product }) {
                 )}
             </div>
 
-            <div className="p-4 sm:p-5 lg:p-6 flex flex-col flex-1 min-w-0">
+            <div className="p-4 sm:p-5 flex flex-col flex-1">
                 <p
-                    className="text-xs font-semibold tracking-widest mb-2 uppercase"
+                    className="text-xs font-semibold tracking-widest mb-1 uppercase"
                     style={{ color: "#666666" }}
                 >
                     {product.category}
                 </p>
 
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 leading-snug">
+                <h3 className="text-base font-bold text-gray-900 mb-1 leading-snug">
                     {product.title}
                 </h3>
 
-                <p className="text-sm mb-2 leading-relaxed break-words" style={{ color: "#666666" }}>
+                <p className="text-sm mb-2 leading-relaxed" style={{ color: "#666666" }}>
+                    {product.subtitle}
+                </p>
+
+                <p className="text-sm mb-4 leading-relaxed" style={{ color: "#888888" }}>
                     {product.vehicle.join(" • ")}
                 </p>
 
-                <p className="text-sm mb-3 leading-relaxed break-words" style={{ color: "#888888" }}>
-                    {product.subcategory}
-                </p>
-
-                <div className="mb-5 sm:mb-6">
-                    <span
-                        className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
-                        style={{
-                            color: availability.textColor,
-                            backgroundColor: availability.bgColor,
-                        }}
-                    >
-                        {availability.shortLabel}
-                    </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-auto gap-3 sm:gap-4">
-                    <span className="text-xl sm:text-2xl font-bold text-gray-900">{product.price}</span>
+                <div className="flex items-center justify-between gap-3 mt-auto">
+                    <span className="text-lg font-bold text-gray-900">{product.price}</span>
 
                     <button
                         onClick={(e) => {
                             e.preventDefault();
                             addToCart(product, 1);
                         }}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 text-white text-sm font-semibold px-5 py-3 rounded transition-opacity hover:opacity-90"
+                        className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2 rounded transition-opacity hover:opacity-90 whitespace-nowrap"
                         style={{ backgroundColor: "#15415a" }}
                     >
-                        <ShoppingCart size={16} />
+                        <ShoppingCart size={14} />
                         Hinzufügen
                     </button>
                 </div>
@@ -297,13 +296,20 @@ export default function DetailProduct() {
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
 
+    const productSectionRef = useRef<HTMLElement | null>(null);
+    const imageColumnRef = useRef<HTMLDivElement | null>(null);
+    const imageCardRef = useRef<HTMLDivElement | null>(null);
+    const [imageMode, setImageMode] = useState<ImageMode>("static");
+    const [fixedWidth, setFixedWidth] = useState<number>(0);
+    const [cardHeight, setCardHeight] = useState<number>(680);
+    const [bottomOffset, setBottomOffset] = useState<number>(0);
+
     const product = useMemo(() => {
         return mockProducts.find((item) => item.id === Number(id));
     }, [id]);
 
     const similarProducts = useMemo(() => {
         if (!product) return [];
-
         return mockProducts.filter(
             (item) => item.category === product.category && item.id !== product.id
         );
@@ -317,12 +323,66 @@ export default function DetailProduct() {
         setQuantity((prev) => prev + 1);
     }
 
+    useEffect(() => {
+        function updateImagePosition() {
+            const sectionEl = productSectionRef.current;
+            const columnEl = imageColumnRef.current;
+            const cardEl = imageCardRef.current;
+
+            if (!sectionEl || !columnEl || !cardEl) return;
+
+            const isDesktop = window.innerWidth >= DESKTOP_BREAKPOINT;
+            const nextCardHeight = cardEl.offsetHeight;
+            const nextColumnWidth = columnEl.offsetWidth;
+
+            setCardHeight(nextCardHeight);
+            setFixedWidth(nextColumnWidth);
+
+            if (!isDesktop) {
+                setImageMode("static");
+                setBottomOffset(0);
+                return;
+            }
+
+            const sectionRect = sectionEl.getBoundingClientRect();
+            const sectionTop = window.scrollY + sectionRect.top;
+            const sectionBottom = sectionTop + sectionEl.offsetHeight;
+
+            const startStickAt = sectionTop - STICKY_TOP;
+            const stopStickAt =
+                sectionBottom - STICKY_TOP - nextCardHeight - STOP_BEFORE_NEXT_SECTION;
+
+            if (window.scrollY < startStickAt) {
+                setImageMode("static");
+                setBottomOffset(0);
+                return;
+            }
+
+            if (window.scrollY >= startStickAt && window.scrollY < stopStickAt) {
+                setImageMode("fixed");
+                setBottomOffset(0);
+                return;
+            }
+
+            setImageMode("bottom");
+            setBottomOffset(
+                Math.max(0, sectionEl.offsetHeight - nextCardHeight - STOP_BEFORE_NEXT_SECTION)
+            );
+        }
+
+        updateImagePosition();
+        window.addEventListener("scroll", updateImagePosition, { passive: true });
+        window.addEventListener("resize", updateImagePosition);
+
+        return () => {
+            window.removeEventListener("scroll", updateImagePosition);
+            window.removeEventListener("resize", updateImagePosition);
+        };
+    }, [product]);
+
     if (!product) {
         return (
-            <div
-                className="min-h-screen font-sans overflow-x-hidden"
-                style={{ backgroundColor: "#f4f5f6" }}
-            >
+            <div className="min-h-screen font-sans" style={{ backgroundColor: "#f4f5f6" }}>
                 <Navbar />
 
                 <section className="px-4 sm:px-6 py-16 sm:py-20">
@@ -341,7 +401,10 @@ export default function DetailProduct() {
                                 Produkt nicht gefunden
                             </h1>
 
-                            <p className="mb-6 text-sm sm:text-base leading-relaxed" style={{ color: "#666666" }}>
+                            <p
+                                className="mb-6 text-sm sm:text-base leading-relaxed"
+                                style={{ color: "#666666" }}
+                            >
                                 Dieses Produkt ist nicht verfügbar oder die URL ist ungültig.
                             </p>
 
@@ -365,14 +428,35 @@ export default function DetailProduct() {
     const availability = getAvailabilityConfig(product.stockStatus, product.stock);
     const StatusIcon = availability.icon;
 
+    const imageCardStyles: React.CSSProperties =
+        imageMode === "fixed"
+            ? {
+                position: "fixed",
+                top: `${STICKY_TOP}px`,
+                width: fixedWidth ? `${fixedWidth}px` : "100%",
+                zIndex: 20,
+            }
+            : imageMode === "bottom"
+                ? {
+                    position: "absolute",
+                    top: `${bottomOffset}px`,
+                    left: 0,
+                    right: 0,
+                    width: "100%",
+                }
+                : {
+                    position: "relative",
+                    width: "100%",
+                };
+
     return (
-        <div
-            className="min-h-screen font-sans overflow-x-hidden"
-            style={{ backgroundColor: "#f4f5f6" }}
-        >
+        <div className="min-h-screen font-sans" style={{ backgroundColor: "#f4f5f6" }}>
             <Navbar />
 
-            <section className="px-4 sm:px-6 py-8 sm:py-10 md:py-14">
+            <section
+                ref={productSectionRef}
+                className="px-4 sm:px-6 py-8 sm:py-10 md:py-14 relative"
+            >
                 <div className="max-w-7xl mx-auto">
                     <Link
                         to="/catalog"
@@ -383,33 +467,71 @@ export default function DetailProduct() {
                         Zurück zum Katalog
                     </Link>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.95fr] gap-6 sm:gap-8 lg:gap-12 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6 sm:gap-8 lg:gap-12 items-start">
                         <div
-                            className="bg-white rounded-2xl overflow-hidden relative"
-                            style={{
-                                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-                                border: "1px solid #eeeeee",
-                            }}
+                            ref={imageColumnRef}
+                            className="min-w-0 relative hidden lg:block"
+                            style={{ minHeight: `${cardHeight}px` }}
                         >
-                            <div
-                                className="w-full h-[320px] sm:h-[440px] md:h-[560px] lg:min-h-[520px] xl:min-h-[700px] flex items-center justify-center"
-                                style={{ backgroundColor: "#ffffff" }}
-                            >
-                                <img
-                                    src={product.image}
-                                    alt={product.title}
-                                    className="w-full h-full object-contain"
-                                />
-                            </div>
-
-                            {product.featured && (
-                                <span
-                                    className="absolute top-4 sm:top-5 right-4 sm:right-5 text-white text-xs font-semibold px-3 py-1 rounded"
-                                    style={{ backgroundColor: "#15415a" }}
+                            <div ref={imageCardRef} style={imageCardStyles}>
+                                <div
+                                    className="bg-white rounded-2xl overflow-hidden"
+                                    style={{
+                                        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                                        border: "1px solid #eeeeee",
+                                    }}
                                 >
-                                    Beliebt
-                                </span>
-                            )}
+                                    <div
+                                        className="relative w-full h-[600px] xl:h-[660px] flex items-center justify-center p-6 lg:p-10 xl:p-12"
+                                        style={{ backgroundColor: "#ffffff" }}
+                                    >
+                                        <img
+                                            src={product.image}
+                                            alt={product.title}
+                                            className="w-full h-full object-contain"
+                                        />
+
+                                        {product.featured && (
+                                            <span
+                                                className="absolute top-4 sm:top-5 right-4 sm:right-5 text-white text-xs font-semibold px-3 py-1 rounded"
+                                                style={{ backgroundColor: "#15415a" }}
+                                            >
+                                                Beliebt
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="lg:hidden min-w-0">
+                            <div
+                                className="bg-white rounded-2xl overflow-hidden"
+                                style={{
+                                    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                                    border: "1px solid #eeeeee",
+                                }}
+                            >
+                                <div
+                                    className="relative w-full h-[320px] sm:h-[440px] md:h-[560px] flex items-center justify-center p-6 lg:p-10 xl:p-12"
+                                    style={{ backgroundColor: "#ffffff" }}
+                                >
+                                    <img
+                                        src={product.image}
+                                        alt={product.title}
+                                        className="w-full h-full object-contain"
+                                    />
+
+                                    {product.featured && (
+                                        <span
+                                            className="absolute top-4 sm:top-5 right-4 sm:right-5 text-white text-xs font-semibold px-3 py-1 rounded"
+                                            style={{ backgroundColor: "#15415a" }}
+                                        >
+                                            Beliebt
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <div className="pt-0 lg:pt-2 min-w-0">
@@ -427,7 +549,10 @@ export default function DetailProduct() {
                                 {product.title}
                             </h1>
 
-                            <p className="text-base sm:text-lg leading-relaxed mb-6 sm:mb-8" style={{ color: "#666666" }}>
+                            <p
+                                className="text-base sm:text-lg leading-relaxed mb-6 sm:mb-8"
+                                style={{ color: "#666666" }}
+                            >
                                 {product.subtitle}
                             </p>
 
@@ -435,27 +560,61 @@ export default function DetailProduct() {
                                 <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
                                     {product.price}
                                 </span>
-                                <span className="text-sm sm:text-lg sm:mb-1" style={{ color: "#666666" }}>
+                                <span
+                                    className="text-sm sm:text-lg sm:mb-1"
+                                    style={{ color: "#666666" }}
+                                >
                                     inkl. MwSt.
                                 </span>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
-                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
-                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>Marke</p>
-                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.brand}</p>
+                                <div
+                                    className="bg-white rounded-2xl p-4 sm:p-5 border"
+                                    style={{ borderColor: "#e8e8e8" }}
+                                >
+                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>
+                                        Marke
+                                    </p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">
+                                        {product.brand}
+                                    </p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
-                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>Referenz</p>
-                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.sku}</p>
+
+                                <div
+                                    className="bg-white rounded-2xl p-4 sm:p-5 border"
+                                    style={{ borderColor: "#e8e8e8" }}
+                                >
+                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>
+                                        Referenz
+                                    </p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">
+                                        {product.sku}
+                                    </p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
-                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>Unterkategorie</p>
-                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.subcategory}</p>
+
+                                <div
+                                    className="bg-white rounded-2xl p-4 sm:p-5 border"
+                                    style={{ borderColor: "#e8e8e8" }}
+                                >
+                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>
+                                        Unterkategorie
+                                    </p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">
+                                        {product.subcategory}
+                                    </p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
-                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>Verpackung</p>
-                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.packaging}</p>
+
+                                <div
+                                    className="bg-white rounded-2xl p-4 sm:p-5 border"
+                                    style={{ borderColor: "#e8e8e8" }}
+                                >
+                                    <p className="text-sm mb-1" style={{ color: "#777777" }}>
+                                        Verpackung
+                                    </p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">
+                                        {product.packaging}
+                                    </p>
                                 </div>
                             </div>
 
@@ -550,7 +709,10 @@ export default function DetailProduct() {
                                         <p className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 mb-1">
                                             Schnelle Lieferung
                                         </p>
-                                        <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
+                                        <p
+                                            className="text-sm sm:text-base md:text-lg leading-relaxed"
+                                            style={{ color: "#666666" }}
+                                        >
                                             Versand innerhalb von 24-48 Stunden in Europa und weltweit
                                         </p>
                                     </div>
@@ -562,7 +724,10 @@ export default function DetailProduct() {
                                     <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
                                         Kurzbeschreibung
                                     </p>
-                                    <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
+                                    <p
+                                        className="text-sm sm:text-base md:text-lg leading-relaxed"
+                                        style={{ color: "#666666" }}
+                                    >
                                         {product.shortDescription}
                                     </p>
                                 </div>
@@ -571,7 +736,10 @@ export default function DetailProduct() {
                                     <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
                                         Produktdetails
                                     </p>
-                                    <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
+                                    <p
+                                        className="text-sm sm:text-base md:text-lg leading-relaxed"
+                                        style={{ color: "#666666" }}
+                                    >
                                         {product.longDescription}
                                     </p>
                                 </div>
@@ -605,7 +773,7 @@ export default function DetailProduct() {
                         Ähnliche Produkte
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6">
                         {similarProducts.map((item) => (
                             <ProductCard key={item.id} product={item} />
                         ))}
@@ -625,7 +793,10 @@ export default function DetailProduct() {
                             >
                                 Keine ähnlichen Produkte gefunden
                             </h3>
-                            <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#666666" }}>
+                            <p
+                                className="text-sm sm:text-base leading-relaxed"
+                                style={{ color: "#666666" }}
+                            >
                                 Für diese Kategorie sind aktuell keine weiteren Produkte verfügbar.
                             </p>
                         </div>
