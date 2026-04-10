@@ -375,29 +375,30 @@ export default function Catalog() {
         );
     }
 
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
-        sanitizeValues(searchParams.getAll("category"), allMainCategories)
+    const selectedCategories = useMemo(
+        () => sanitizeValues(searchParams.getAll("category"), allMainCategories),
+        [searchParams, allMainCategories]
     );
 
-    const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(() =>
-        sanitizeValues(searchParams.getAll("subcategory"), allSubcategories)
+    const selectedSubcategories = useMemo(
+        () => sanitizeValues(searchParams.getAll("subcategory"), allSubcategories),
+        [searchParams, allSubcategories]
     );
 
-    const [selectedVehicles, setSelectedVehicles] = useState<string[]>(() =>
-        sanitizeValues(searchParams.getAll("vehicle"), vehicles)
+    const selectedVehicles = useMemo(
+        () => sanitizeValues(searchParams.getAll("vehicle"), vehicles),
+        [searchParams]
     );
 
-    const [expandedGroups, setExpandedGroups] = useState<string[]>(() =>
-        categoryTree
-            .filter((group) =>
-                group.items.some((item) => searchParams.getAll("subcategory").includes(item))
-            )
-            .map((group) => group.title)
-    );
+    const sortBy = useMemo(() => {
+        const value = searchParams.get("sort");
+        if (value === "price-asc" || value === "price-desc" || value === "popular") {
+            return value;
+        }
+        return "popular";
+    }, [searchParams]);
 
-    const [sortBy, setSortBy] = useState(
-        searchParams.get("sort") || "popular"
-    );
+    const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
     function updateUrl(
@@ -427,19 +428,16 @@ export default function Catalog() {
 
     function toggleCategory(value: string) {
         const next = toggleArrayValue(selectedCategories, value);
-        setSelectedCategories(next);
         updateUrl(next, selectedSubcategories, selectedVehicles);
     }
 
     function toggleSubcategory(value: string) {
         const next = toggleArrayValue(selectedSubcategories, value);
-        setSelectedSubcategories(next);
         updateUrl(selectedCategories, next, selectedVehicles);
     }
 
     function toggleVehicle(value: string) {
         const next = toggleArrayValue(selectedVehicles, value);
-        setSelectedVehicles(next);
         updateUrl(selectedCategories, selectedSubcategories, next);
     }
 
@@ -452,10 +450,6 @@ export default function Catalog() {
     }
 
     function clearAllFilters() {
-        setSelectedCategories([]);
-        setSelectedSubcategories([]);
-        setSelectedVehicles([]);
-        setSortBy("popular");
         setSearchParams({}, { replace: true });
     }
 
@@ -674,16 +668,14 @@ export default function Catalog() {
                                 <div className="relative w-full sm:w-[250px]">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) => {
-                                            const nextSort = e.target.value;
-                                            setSortBy(nextSort);
+                                        onChange={(e) =>
                                             updateUrl(
                                                 selectedCategories,
                                                 selectedSubcategories,
                                                 selectedVehicles,
-                                                nextSort
-                                            );
-                                        }}
+                                                e.target.value
+                                            )
+                                        }
                                         className="w-full appearance-none bg-white rounded-xl border px-4 sm:px-5 py-3 sm:py-4 pr-11 sm:pr-12 text-sm sm:text-base outline-none"
                                         style={{
                                             borderColor: "#d9d9d9",

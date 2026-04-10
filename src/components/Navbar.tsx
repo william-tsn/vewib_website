@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate, createSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
   User,
@@ -23,10 +23,13 @@ export default function Navbar() {
     categories?: string[];
     subcategories?: string[];
     vehicles?: string[];
+    sort?: string;
   }) {
-    if (!filters) return "/catalog";
-
     const params = new URLSearchParams();
+
+    if (!filters) {
+      return "/catalog";
+    }
 
     filters.categories?.forEach((category) => {
       params.append("category", category);
@@ -40,6 +43,10 @@ export default function Navbar() {
       params.append("vehicle", vehicle);
     });
 
+    if (filters.sort && filters.sort !== "popular") {
+      params.set("sort", filters.sort);
+    }
+
     const search = params.toString();
     return search ? `/catalog?${search}` : "/catalog";
   }
@@ -48,15 +55,14 @@ export default function Navbar() {
     { label: "Startseite", href: "/home" },
     { label: "Katalog", href: "/catalog" },
 
-    // correspond exactement à la catégorie de ton Catalog
+    // reset tout puis applique uniquement Motor
     { label: "Motor", href: buildCatalogLink({ categories: ["Motor"] }) },
 
-    // dans tes données de filtres, "Karosserie" n'existe pas comme catégorie
-    // la catégorie réelle correspondante est "Aufbau"
+    // "Karosserie" côté menu = catégorie réelle "Aufbau"
     { label: "Karosserie", href: buildCatalogLink({ categories: ["Aufbau"] }) },
 
-    // idem : "Innenraum" n'existe pas comme catégorie principale dans ton Catalog
-    // donc on l'envoie vers Aufbau aussi, sans inventer une sous-catégorie
+    // ici tu peux soit viser Aufbau, soit une vraie sous-catégorie
+    // pour l’instant je garde Aufbau pour rester cohérent avec ton Catalog
     { label: "Innenraum", href: buildCatalogLink({ categories: ["Aufbau"] }) },
 
     { label: "Zubehör", href: buildCatalogLink({ categories: ["Zubehör"] }) },
