@@ -320,7 +320,7 @@ export default function DetailProduct() {
     if (!product) {
         return (
             <div
-                className="min-h-screen font-sans"
+                className="min-h-screen font-sans overflow-x-hidden"
                 style={{ backgroundColor: "#f4f5f6" }}
             >
                 <Navbar />
@@ -367,7 +367,7 @@ export default function DetailProduct() {
 
     return (
         <div
-            className="min-h-screen font-sans"
+            className="min-h-screen font-sans overflow-x-hidden"
             style={{ backgroundColor: "#f4f5f6" }}
         >
             <Navbar />

@@ -31,7 +31,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen font-sans flex flex-col" style={{ backgroundColor: "#f4f5f6" }}>
+    <div className="min-h-screen font-sans flex flex-col overflow-x-hidden" style={{ backgroundColor: "#f4f5f6" }}>
       <Navbar />
 
       <main className="flex-1 px-4 sm:px-6 py-10 sm:py-14 md:py-24">

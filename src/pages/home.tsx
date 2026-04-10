@@ -10,7 +10,7 @@ export default function Home() {
   const displayedProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 4);
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="min-h-screen font-sans overflow-x-hidden">
       <Navbar />
 
       <section className="relative w-full min-h-[560px] md:min-h-[600px] flex flex-col justify-between overflow-hidden">

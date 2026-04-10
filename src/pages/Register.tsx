@@ -46,7 +46,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen font-sans" style={{ backgroundColor: "#f4f5f6" }}>
+    <div className="min-h-screen font-sans overflow-x-hidden" style={{ backgroundColor: "#f4f5f6" }}>
       <PublicNavbar />
 
       <section className="py-20 md:py-28">
