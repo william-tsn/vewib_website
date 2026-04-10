@@ -35,7 +35,6 @@ export default function Footer() {
           </a>
         </div>
       </div>
-
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div>
           <div className="w-32 h-20 flex items-center justify-start mb-4">
@@ -111,22 +110,22 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-
+      
       <div className="max-w-7xl mx-auto px-6 py-8 border-t border-white/15">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/70">
           <p className="text-center md:text-left">
-            © 2026 vewib. Tous droits réservés.
+            © 2026 vewib. Alle Rechte vorbehalten.
           </p>
 
           <div className="flex items-center gap-6 md:gap-8">
             <a href="/mentions-legales" className="hover:text-white transition">
-              Mentions légales
+              Impressum
             </a>
             <a href="/cgv" className="hover:text-white transition">
-              CGV
+              Allgemeine Geschäftsbedingungen
             </a>
             <a href="/confidentialite" className="hover:text-white transition">
-              Confidentialité
+              Datenschutz
             </a>
           </div>
         </div>

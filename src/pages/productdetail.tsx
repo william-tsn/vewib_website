@@ -212,7 +212,7 @@ function ProductCard({ product }: { product: Product }) {
     return (
         <Link
             to={`/product/${product.id}`}
-            className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl min-w-0"
             style={{
                 boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                 border: "1px solid #eeeeee",
@@ -220,7 +220,7 @@ function ProductCard({ product }: { product: Product }) {
         >
             <div className="relative">
                 <div
-                    className="w-full h-80 flex items-center justify-center overflow-hidden"
+                    className="w-full h-56 sm:h-64 lg:h-72 xl:h-80 flex items-center justify-center overflow-hidden"
                     style={{ backgroundColor: "#f4f5f6" }}
                 >
                     <img
@@ -232,7 +232,7 @@ function ProductCard({ product }: { product: Product }) {
 
                 {product.featured && (
                     <span
-                        className="absolute top-4 right-4 text-white text-xs font-semibold px-3 py-1 rounded"
+                        className="absolute top-3 sm:top-4 right-3 sm:right-4 text-white text-xs font-semibold px-3 py-1 rounded"
                         style={{ backgroundColor: "#15415a" }}
                     >
                         Beliebt
@@ -240,7 +240,7 @@ function ProductCard({ product }: { product: Product }) {
                 )}
             </div>
 
-            <div className="p-6 flex flex-col flex-1">
+            <div className="p-4 sm:p-5 lg:p-6 flex flex-col flex-1 min-w-0">
                 <p
                     className="text-xs font-semibold tracking-widest mb-2 uppercase"
                     style={{ color: "#666666" }}
@@ -248,19 +248,19 @@ function ProductCard({ product }: { product: Product }) {
                     {product.category}
                 </p>
 
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 leading-snug">
                     {product.title}
                 </h3>
 
-                <p className="text-sm mb-2" style={{ color: "#666666" }}>
+                <p className="text-sm mb-2 leading-relaxed break-words" style={{ color: "#666666" }}>
                     {product.vehicle.join(" • ")}
                 </p>
 
-                <p className="text-sm mb-3" style={{ color: "#888888" }}>
+                <p className="text-sm mb-3 leading-relaxed break-words" style={{ color: "#888888" }}>
                     {product.subcategory}
                 </p>
 
-                <div className="mb-6">
+                <div className="mb-5 sm:mb-6">
                     <span
                         className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
                         style={{
@@ -272,15 +272,15 @@ function ProductCard({ product }: { product: Product }) {
                     </span>
                 </div>
 
-                <div className="flex items-center justify-between mt-auto gap-4">
-                    <span className="text-2xl font-bold text-gray-900">{product.price}</span>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-auto gap-3 sm:gap-4">
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900">{product.price}</span>
 
                     <button
                         onClick={(e) => {
                             e.preventDefault();
                             addToCart(product, 1);
                         }}
-                        className="flex items-center gap-2 text-white text-sm font-semibold px-5 py-3 rounded transition-opacity hover:opacity-90"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 text-white text-sm font-semibold px-5 py-3 rounded transition-opacity hover:opacity-90"
                         style={{ backgroundColor: "#15415a" }}
                     >
                         <ShoppingCart size={16} />
@@ -325,23 +325,23 @@ export default function DetailProduct() {
             >
                 <Navbar />
 
-                <section className="px-6 py-20">
+                <section className="px-4 sm:px-6 py-16 sm:py-20">
                     <div className="max-w-4xl mx-auto">
                         <div
-                            className="bg-white rounded-2xl p-10 text-center"
+                            className="bg-white rounded-2xl p-6 sm:p-8 md:p-10 text-center"
                             style={{
                                 boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                                 border: "1px solid #eeeeee",
                             }}
                         >
                             <h1
-                                className="text-3xl md:text-4xl font-bold mb-4"
+                                className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4"
                                 style={{ fontFamily: "'Georgia', serif", color: "#15415a" }}
                             >
                                 Produkt nicht gefunden
                             </h1>
 
-                            <p className="mb-6" style={{ color: "#666666" }}>
+                            <p className="mb-6 text-sm sm:text-base leading-relaxed" style={{ color: "#666666" }}>
                                 Dieses Produkt ist nicht verfügbar oder die URL ist ungültig.
                             </p>
 
@@ -372,18 +372,18 @@ export default function DetailProduct() {
         >
             <Navbar />
 
-            <section className="px-6 py-10 md:py-14">
+            <section className="px-4 sm:px-6 py-8 sm:py-10 md:py-14">
                 <div className="max-w-7xl mx-auto">
                     <Link
                         to="/catalog"
-                        className="inline-flex items-center gap-3 text-base mb-10 transition-colors"
+                        className="inline-flex items-center gap-3 text-sm sm:text-base mb-6 sm:mb-8 md:mb-10 transition-colors"
                         style={{ color: "#444444" }}
                     >
                         <ArrowLeft size={20} />
                         Zurück zum Katalog
                     </Link>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.95fr] gap-12 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.95fr] gap-6 sm:gap-8 lg:gap-12 items-start">
                         <div
                             className="bg-white rounded-2xl overflow-hidden relative"
                             style={{
@@ -392,7 +392,7 @@ export default function DetailProduct() {
                             }}
                         >
                             <div
-                                className="w-full min-h-[520px] md:min-h-[700px] flex items-center justify-center"
+                                className="w-full h-[320px] sm:h-[440px] md:h-[560px] lg:min-h-[520px] xl:min-h-[700px] flex items-center justify-center"
                                 style={{ backgroundColor: "#ffffff" }}
                             >
                                 <img
@@ -404,7 +404,7 @@ export default function DetailProduct() {
 
                             {product.featured && (
                                 <span
-                                    className="absolute top-5 right-5 text-white text-xs font-semibold px-3 py-1 rounded"
+                                    className="absolute top-4 sm:top-5 right-4 sm:right-5 text-white text-xs font-semibold px-3 py-1 rounded"
                                     style={{ backgroundColor: "#15415a" }}
                                 >
                                     Beliebt
@@ -412,63 +412,63 @@ export default function DetailProduct() {
                             )}
                         </div>
 
-                        <div className="pt-2">
+                        <div className="pt-0 lg:pt-2 min-w-0">
                             <p
-                                className="text-sm uppercase tracking-[0.18em] mb-4"
+                                className="text-xs sm:text-sm uppercase tracking-[0.18em] mb-3 sm:mb-4"
                                 style={{ color: "#444444" }}
                             >
                                 {product.category}
                             </p>
 
                             <h1
-                                className="text-4xl md:text-6xl font-bold leading-tight mb-4"
+                                className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold leading-tight mb-4"
                                 style={{ fontFamily: "'Georgia', serif", color: "#111111" }}
                             >
                                 {product.title}
                             </h1>
 
-                            <p className="text-lg mb-8" style={{ color: "#666666" }}>
+                            <p className="text-base sm:text-lg leading-relaxed mb-6 sm:mb-8" style={{ color: "#666666" }}>
                                 {product.subtitle}
                             </p>
 
-                            <div className="flex items-end gap-4 mb-8">
-                                <span className="text-4xl md:text-5xl font-bold text-gray-900">
+                            <div className="flex flex-col sm:flex-row sm:items-end gap-1 sm:gap-4 mb-6 sm:mb-8">
+                                <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
                                     {product.price}
                                 </span>
-                                <span className="text-lg mb-1" style={{ color: "#666666" }}>
+                                <span className="text-sm sm:text-lg sm:mb-1" style={{ color: "#666666" }}>
                                     inkl. MwSt.
                                 </span>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                                <div className="bg-white rounded-2xl p-5 border" style={{ borderColor: "#e8e8e8" }}>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
+                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
                                     <p className="text-sm mb-1" style={{ color: "#777777" }}>Marke</p>
-                                    <p className="text-lg font-semibold text-gray-900">{product.brand}</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.brand}</p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-5 border" style={{ borderColor: "#e8e8e8" }}>
+                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
                                     <p className="text-sm mb-1" style={{ color: "#777777" }}>Referenz</p>
-                                    <p className="text-lg font-semibold text-gray-900">{product.sku}</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.sku}</p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-5 border" style={{ borderColor: "#e8e8e8" }}>
+                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
                                     <p className="text-sm mb-1" style={{ color: "#777777" }}>Unterkategorie</p>
-                                    <p className="text-lg font-semibold text-gray-900">{product.subcategory}</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.subcategory}</p>
                                 </div>
-                                <div className="bg-white rounded-2xl p-5 border" style={{ borderColor: "#e8e8e8" }}>
+                                <div className="bg-white rounded-2xl p-4 sm:p-5 border" style={{ borderColor: "#e8e8e8" }}>
                                     <p className="text-sm mb-1" style={{ color: "#777777" }}>Verpackung</p>
-                                    <p className="text-lg font-semibold text-gray-900">{product.packaging}</p>
+                                    <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">{product.packaging}</p>
                                 </div>
                             </div>
 
-                            <div className="mb-8">
-                                <p className="text-2xl font-semibold text-gray-900 mb-4">
+                            <div className="mb-6 sm:mb-8">
+                                <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
                                     Kompatibilität
                                 </p>
 
-                                <div className="flex flex-wrap gap-3">
+                                <div className="flex flex-wrap gap-2 sm:gap-3">
                                     {product.vehicle.map((item) => (
                                         <span
                                             key={item}
-                                            className="px-4 py-2 rounded-xl text-base"
+                                            className="px-3 sm:px-4 py-2 rounded-xl text-sm sm:text-base"
                                             style={{ backgroundColor: "#edf1f3", color: "#15415a" }}
                                         >
                                             {item}
@@ -478,18 +478,20 @@ export default function DetailProduct() {
                             </div>
 
                             <div
-                                className="inline-flex items-center gap-3 rounded-2xl px-5 py-4 mb-10"
+                                className="inline-flex items-start sm:items-center gap-3 rounded-2xl px-4 sm:px-5 py-4 mb-8 sm:mb-10 max-w-full"
                                 style={{
                                     color: availability.textColor,
                                     backgroundColor: availability.bgColor,
                                 }}
                             >
-                                <StatusIcon size={22} />
-                                <span className="text-xl font-semibold">{availability.label}</span>
+                                <StatusIcon size={22} className="shrink-0 mt-0.5 sm:mt-0" />
+                                <span className="text-base sm:text-lg lg:text-xl font-semibold leading-relaxed">
+                                    {availability.label}
+                                </span>
                             </div>
 
-                            <div className="mb-8">
-                                <p className="text-2xl font-semibold text-gray-900 mb-4">
+                            <div className="mb-6 sm:mb-8">
+                                <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
                                     Menge
                                 </p>
 
@@ -503,19 +505,19 @@ export default function DetailProduct() {
                                     <button
                                         type="button"
                                         onClick={decreaseQty}
-                                        className="w-16 h-14 flex items-center justify-center"
+                                        className="w-12 sm:w-14 md:w-16 h-12 sm:h-14 flex items-center justify-center"
                                     >
                                         <Minus size={20} />
                                     </button>
 
-                                    <div className="w-20 h-14 flex items-center justify-center text-2xl font-semibold">
+                                    <div className="w-14 sm:w-16 md:w-20 h-12 sm:h-14 flex items-center justify-center text-xl sm:text-2xl font-semibold">
                                         {quantity}
                                     </div>
 
                                     <button
                                         type="button"
                                         onClick={increaseQty}
-                                        className="w-16 h-14 flex items-center justify-center"
+                                        className="w-12 sm:w-14 md:w-16 h-12 sm:h-14 flex items-center justify-center"
                                     >
                                         <Plus size={20} />
                                     </button>
@@ -524,7 +526,7 @@ export default function DetailProduct() {
 
                             <button
                                 onClick={() => addToCart(product, quantity)}
-                                className="w-full flex items-center justify-center gap-3 text-white text-xl font-semibold px-8 py-5 rounded-xl transition-opacity hover:opacity-90 mb-8"
+                                className="w-full flex items-center justify-center gap-3 text-white text-base sm:text-lg md:text-xl font-semibold px-6 sm:px-8 py-4 sm:py-5 rounded-xl transition-opacity hover:opacity-90 mb-6 sm:mb-8"
                                 style={{ backgroundColor: "#15415a" }}
                             >
                                 <ShoppingCart size={22} />
@@ -532,7 +534,7 @@ export default function DetailProduct() {
                             </button>
 
                             <div
-                                className="bg-white rounded-2xl p-8"
+                                className="bg-white rounded-2xl p-5 sm:p-6 md:p-8"
                                 style={{
                                     boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                                     border: "1px solid #e4e4e4",
@@ -545,44 +547,44 @@ export default function DetailProduct() {
                                         className="mt-1 shrink-0"
                                     />
                                     <div>
-                                        <p className="text-2xl font-semibold text-gray-900 mb-1">
+                                        <p className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 mb-1">
                                             Schnelle Lieferung
                                         </p>
-                                        <p className="text-lg" style={{ color: "#666666" }}>
+                                        <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
                                             Versand innerhalb von 24-48 Stunden in Europa und weltweit
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mt-8 space-y-8">
+                            <div className="mt-6 sm:mt-8 space-y-6 sm:space-y-8">
                                 <div>
-                                    <p className="text-2xl font-semibold text-gray-900 mb-3">
+                                    <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
                                         Kurzbeschreibung
                                     </p>
-                                    <p className="text-lg leading-relaxed" style={{ color: "#666666" }}>
+                                    <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
                                         {product.shortDescription}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p className="text-2xl font-semibold text-gray-900 mb-3">
+                                    <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
                                         Produktdetails
                                     </p>
-                                    <p className="text-lg leading-relaxed" style={{ color: "#666666" }}>
+                                    <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
                                         {product.longDescription}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p className="text-2xl font-semibold text-gray-900 mb-3">
+                                    <p className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">
                                         Produktlink
                                     </p>
                                     <a
                                         href={product.productUrl}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="text-lg underline break-all"
+                                        className="text-sm sm:text-base md:text-lg underline break-all"
                                         style={{ color: "#15415a" }}
                                     >
                                         {product.productUrl}
@@ -594,16 +596,16 @@ export default function DetailProduct() {
                 </div>
             </section>
 
-            <section className="px-6 pb-20 md:pb-24">
+            <section className="px-4 sm:px-6 pb-16 sm:pb-20 md:pb-24">
                 <div className="max-w-7xl mx-auto">
                     <h2
-                        className="text-4xl md:text-5xl font-bold mb-10"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-10"
                         style={{ fontFamily: "'Georgia', serif", color: "#111111" }}
                     >
                         Ähnliche Produkte
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
                         {similarProducts.map((item) => (
                             <ProductCard key={item.id} product={item} />
                         ))}
@@ -611,19 +613,19 @@ export default function DetailProduct() {
 
                     {similarProducts.length === 0 && (
                         <div
-                            className="bg-white rounded-2xl p-10 text-center mt-6"
+                            className="bg-white rounded-2xl p-6 sm:p-8 md:p-10 text-center mt-6"
                             style={{
                                 boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                                 border: "1px solid #eeeeee",
                             }}
                         >
                             <h3
-                                className="text-2xl font-bold mb-3"
+                                className="text-xl sm:text-2xl font-bold mb-3"
                                 style={{ fontFamily: "'Georgia', serif", color: "#15415a" }}
                             >
                                 Keine ähnlichen Produkte gefunden
                             </h3>
-                            <p style={{ color: "#666666" }}>
+                            <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#666666" }}>
                                 Für diese Kategorie sind aktuell keine weiteren Produkte verfügbar.
                             </p>
                         </div>

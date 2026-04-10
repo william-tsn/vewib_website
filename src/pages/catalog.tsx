@@ -367,6 +367,7 @@ export default function Catalog() {
     const [selectedVehicles, setSelectedVehicles] = useState<string[]>([]);
     const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState("popular");
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     const { addToCart } = useCart();
 
     const allMainCategories = categoryTree.map((category) => category.title);
@@ -387,6 +388,15 @@ export default function Catalog() {
                 : [...prev, groupTitle]
         );
     }
+
+    function clearAllFilters() {
+        setSelectedCategories([]);
+        setSelectedSubcategories([]);
+        setSelectedVehicles([]);
+    }
+
+    const activeFiltersCount =
+        selectedCategories.length + selectedSubcategories.length + selectedVehicles.length;
 
     const filteredProducts = useMemo(() => {
         let products = [...mockProducts];
@@ -432,45 +442,81 @@ export default function Catalog() {
         <div className="min-h-screen font-sans" style={{ backgroundColor: "#f4f5f6" }}>
             <Navbar />
 
-            <section className="px-6 py-16 md:py-20">
+            <section className="px-4 sm:px-6 py-12 md:py-20">
                 <div className="max-w-7xl mx-auto">
-                    <div className="mb-12">
+                    <div className="mb-8 md:mb-12">
                         <h1
-                            className="text-4xl md:text-6xl font-bold text-gray-900 mb-4"
+                            className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-900 mb-4"
                             style={{ fontFamily: "'Georgia', serif" }}
                         >
                             Katalog
                         </h1>
-                        <p className="text-base md:text-lg" style={{ color: "#666666" }}>
+                        <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
                             Entdecken Sie unsere komplette Auswahl an Ersatzteilen für klassische Volkswagen.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10">
+                    <div className="flex items-center gap-3 mb-6 lg:hidden">
+                        <button
+                            type="button"
+                            onClick={() => setMobileFiltersOpen((prev) => !prev)}
+                            className="flex-1 flex items-center justify-center gap-2 bg-white rounded-xl border px-4 py-3 text-sm font-semibold"
+                            style={{ borderColor: "#d9d9d9", color: "#15415a" }}
+                        >
+                            <Filter size={18} />
+                            Filter {activeFiltersCount > 0 ? `(${activeFiltersCount})` : ""}
+                        </button>
+
+                        {activeFiltersCount > 0 && (
+                            <button
+                                type="button"
+                                onClick={clearAllFilters}
+                                className="shrink-0 rounded-xl border px-4 py-3 text-sm font-medium bg-white"
+                                style={{ borderColor: "#d9d9d9", color: "#666666" }}
+                            >
+                                Zurücksetzen
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6 md:gap-10">
                         <aside
-                            className="bg-white rounded-2xl p-8 h-fit"
+                            className={`${mobileFiltersOpen ? "block" : "hidden"} lg:block bg-white rounded-2xl p-5 sm:p-6 lg:p-8 h-fit`}
                             style={{
                                 boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                                 border: "1px solid #e9e9e9",
                             }}
                         >
-                            <div className="flex items-center gap-3 mb-8">
-                                <Filter size={24} style={{ color: "#111111" }} />
-                                <h2 className="text-2xl font-bold text-gray-900">Filter</h2>
+                            <div className="flex items-center justify-between gap-3 mb-6 lg:mb-8">
+                                <div className="flex items-center gap-3">
+                                    <Filter size={22} style={{ color: "#111111" }} />
+                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Filter</h2>
+                                </div>
+
+                                {activeFiltersCount > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={clearAllFilters}
+                                        className="text-sm font-medium"
+                                        style={{ color: "#15415a" }}
+                                    >
+                                        Löschen
+                                    </button>
+                                )}
                             </div>
 
-                            <div className="mb-10">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-5">Kategorien</h3>
-                                <div className="space-y-3 max-h-[420px] overflow-auto pr-2">
+                            <div className="mb-8 md:mb-10">
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">Kategorien</h3>
+                                <div className="space-y-3 max-h-[320px] lg:max-h-[420px] overflow-auto pr-1 sm:pr-2">
                                     {allMainCategories.map((category) => (
                                         <label key={category} className="flex items-start gap-3 cursor-pointer">
                                             <input
                                                 type="checkbox"
                                                 checked={selectedCategories.includes(category)}
                                                 onChange={() => toggleSelection(category, setSelectedCategories)}
-                                                className="mt-1 h-5 w-5 rounded border-gray-300"
+                                                className="mt-1 h-5 w-5 rounded border-gray-300 shrink-0"
                                             />
-                                            <span className="text-base leading-relaxed" style={{ color: "#222222" }}>
+                                            <span className="text-sm sm:text-base leading-relaxed break-words" style={{ color: "#222222" }}>
                                                 {category}
                                             </span>
                                         </label>
@@ -478,8 +524,8 @@ export default function Catalog() {
                                 </div>
                             </div>
 
-                            <div className="mb-10">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-5">Fahrzeuge</h3>
+                            <div className="mb-8 md:mb-10">
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">Fahrzeuge</h3>
                                 <div className="space-y-3">
                                     {vehicles.map((vehicle) => (
                                         <label key={vehicle} className="flex items-start gap-3 cursor-pointer">
@@ -487,9 +533,9 @@ export default function Catalog() {
                                                 type="checkbox"
                                                 checked={selectedVehicles.includes(vehicle)}
                                                 onChange={() => toggleSelection(vehicle, setSelectedVehicles)}
-                                                className="mt-1 h-5 w-5 rounded border-gray-300"
+                                                className="mt-1 h-5 w-5 rounded border-gray-300 shrink-0"
                                             />
-                                            <span className="text-base leading-relaxed" style={{ color: "#222222" }}>
+                                            <span className="text-sm sm:text-base leading-relaxed break-words" style={{ color: "#222222" }}>
                                                 {vehicle}
                                             </span>
                                         </label>
@@ -498,8 +544,8 @@ export default function Catalog() {
                             </div>
 
                             <div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-5">Unterkategorien</h3>
-                                <div className="space-y-6 max-h-[520px] overflow-auto pr-2">
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">Unterkategorien</h3>
+                                <div className="space-y-5 sm:space-y-6 max-h-[360px] lg:max-h-[520px] overflow-auto pr-1 sm:pr-2">
                                     {categoryTree.map((group) => {
                                         const isExpanded = expandedGroups.includes(group.title);
                                         const visibleItems = isExpanded ? group.items : group.items.slice(0, 4);
@@ -509,7 +555,7 @@ export default function Catalog() {
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleSelection(group.title, setSelectedCategories)}
-                                                    className="text-left text-sm font-bold uppercase tracking-wider mb-3 transition-colors"
+                                                    className="text-left text-xs sm:text-sm font-bold uppercase tracking-wider mb-3 transition-colors break-words"
                                                     style={{ color: "#15415a" }}
                                                 >
                                                     {group.title}
@@ -524,7 +570,7 @@ export default function Catalog() {
                                                                 key={item}
                                                                 type="button"
                                                                 onClick={() => toggleSelection(item, setSelectedSubcategories)}
-                                                                className="block w-full text-left text-sm leading-relaxed transition-colors"
+                                                                className="block w-full text-left text-sm leading-relaxed transition-colors break-words"
                                                                 style={{
                                                                     color: active ? "#15415a" : "#666666",
                                                                     fontWeight: active ? 700 : 400,
@@ -555,17 +601,17 @@ export default function Catalog() {
                             </div>
                         </aside>
 
-                        <div>
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-                                <p className="text-2xl" style={{ color: "#444444" }}>
+                        <div className="min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                                <p className="text-lg sm:text-2xl" style={{ color: "#444444" }}>
                                     {filteredProducts.length} Produkte gefunden
                                 </p>
 
-                                <div className="relative w-full md:w-[250px]">
+                                <div className="relative w-full sm:w-[250px]">
                                     <select
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        className="w-full appearance-none bg-white rounded-xl border px-5 py-4 pr-12 text-base outline-none"
+                                        className="w-full appearance-none bg-white rounded-xl border px-4 sm:px-5 py-3 sm:py-4 pr-11 sm:pr-12 text-sm sm:text-base outline-none"
                                         style={{
                                             borderColor: "#d9d9d9",
                                             color: "#333333",
@@ -583,7 +629,7 @@ export default function Catalog() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
                                 {filteredProducts.map((product) => {
                                     const availability = getAvailabilityConfig(product.stockStatus);
 
@@ -591,7 +637,7 @@ export default function Catalog() {
                                         <Link
                                             key={product.id}
                                             to={`/product/${product.id}`}
-                                            className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                            className="group bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl min-w-0"
                                             style={{
                                                 boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                                                 border: "1px solid #eeeeee",
@@ -599,7 +645,7 @@ export default function Catalog() {
                                         >
                                             <div className="relative">
                                                 <div
-                                                    className="w-full h-72 flex items-center justify-center overflow-hidden"
+                                                    className="w-full h-56 sm:h-64 md:h-72 flex items-center justify-center overflow-hidden"
                                                     style={{ backgroundColor: "#f4f5f6" }}
                                                 >
                                                     <img
@@ -611,7 +657,7 @@ export default function Catalog() {
 
                                                 {product.featured && (
                                                     <span
-                                                        className="absolute top-4 right-4 text-white text-xs font-semibold px-3 py-1 rounded"
+                                                        className="absolute top-3 sm:top-4 right-3 sm:right-4 text-white text-xs font-semibold px-3 py-1 rounded"
                                                         style={{ backgroundColor: "#15415a" }}
                                                     >
                                                         Beliebt
@@ -619,7 +665,7 @@ export default function Catalog() {
                                                 )}
                                             </div>
 
-                                            <div className="p-5 flex flex-col flex-1">
+                                            <div className="p-4 sm:p-5 flex flex-col flex-1 min-w-0">
                                                 <p
                                                     className="text-xs font-semibold tracking-widest mb-1 uppercase"
                                                     style={{ color: "#666666" }}
@@ -627,15 +673,15 @@ export default function Catalog() {
                                                     {product.category}
                                                 </p>
 
-                                                <h3 className="text-base font-bold text-gray-900 mb-1">
+                                                <h3 className="text-base font-bold text-gray-900 mb-1 leading-snug">
                                                     {product.title}
                                                 </h3>
 
-                                                <p className="text-sm mb-2" style={{ color: "#666666" }}>
+                                                <p className="text-sm mb-2 leading-relaxed" style={{ color: "#666666" }}>
                                                     {product.subtitle}
                                                 </p>
 
-                                                <p className="text-sm mb-3" style={{ color: "#888888" }}>
+                                                <p className="text-sm mb-3 leading-relaxed break-words" style={{ color: "#888888" }}>
                                                     {product.vehicle.join(" • ")} • {product.subcategory}
                                                 </p>
 
@@ -651,14 +697,14 @@ export default function Catalog() {
                                                     </span>
                                                 </div>
 
-                                                <div className="flex items-center justify-between mt-auto gap-4">
+                                                <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row items-start xs:items-center sm:items-start md:items-center justify-between mt-auto gap-3 sm:gap-4">
                                                     <span className="text-lg font-bold text-gray-900">{product.price}</span>
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
                                                             addToCart(product, 1);
                                                         }}
-                                                        className="flex items-center gap-2 text-white text-sm font-semibold px-4 py-2 rounded transition-opacity hover:opacity-90"
+                                                        className="w-full xs:w-auto sm:w-full md:w-auto flex items-center justify-center gap-2 text-white text-sm font-semibold px-4 py-2.5 rounded transition-opacity hover:opacity-90"
                                                         style={{ backgroundColor: "#15415a" }}
                                                     >
                                                         <ShoppingCart size={14} />
@@ -673,7 +719,7 @@ export default function Catalog() {
 
                             {filteredProducts.length === 0 && (
                                 <div
-                                    className="bg-white rounded-2xl p-10 text-center mt-6"
+                                    className="bg-white rounded-2xl p-6 sm:p-10 text-center mt-6"
                                     style={{
                                         boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
                                         border: "1px solid #eeeeee",
@@ -685,7 +731,7 @@ export default function Catalog() {
                                     >
                                         Keine Produkte gefunden
                                     </h3>
-                                    <p style={{ color: "#666666" }}>
+                                    <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#666666" }}>
                                         Bitte passen Sie Ihre Filter an, um weitere Ergebnisse zu sehen.
                                     </p>
                                 </div>
