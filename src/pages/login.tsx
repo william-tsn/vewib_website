@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export default function Login() {
