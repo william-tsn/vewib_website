@@ -1,5 +1,5 @@
 import { ArrowRight, Wrench, Package, Users, Building2, ShieldCheck, Shield, Truck, Clock3, BadgeCheck } from "lucide-react";
-import Footer from "../components/Footer";
+import FooterPublic from "../components/FooterPublic";
 import FlorianBus from "../assets/florian-bus.jpg";
 import VewibAccueil from "../assets/vewib-accueil.jpg";
 import Stock from "../assets/stock.jpg";
@@ -140,7 +140,7 @@ export default function PublicHome() {
                 </div>
             </section>
 
-            <section className="py-16 sm:py-20 md:py-32" style={{ backgroundColor: "#f4f5f6" }}>
+            <section className="py-16 sm:py-20 md:py-32" style={{ backgroundColor: "white" }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
                         <div>
@@ -355,7 +355,7 @@ export default function PublicHome() {
                 </div>
             </section>
 
-            <section className="py-16 sm:py-20 md:py-32" style={{ backgroundColor: "#f4f5f6" }}>
+            <section className="py-16 sm:py-20 md:py-32" style={{ backgroundColor: "white" }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
                         <div>
@@ -583,7 +583,7 @@ export default function PublicHome() {
                 </div>
             </section>
 
-            <Footer />
+            <FooterPublic />
         </div>
     );
 }
