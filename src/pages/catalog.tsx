@@ -4,6 +4,12 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import marchePiedNoir from "../assets/marche-pied-noir-gauche-et-droit.webp";
+import faisceauType1 from "../assets/111998031b.webp";
+import faisceauType4 from "../assets/021998031_1.webp";
+import jointsBoitierDirection from "../assets/photoroom-20241014_103249_1_.webp";
+import jointsAilesBeryllgrun from "../assets/111821707478.webp";
+import relaisClignotants6V from "../assets/photoroom-20241014_113711.webp";
 
 type StockStatus = "in_stock" | "out_of_stock" | "coming_soon";
 
@@ -215,7 +221,7 @@ const mockProducts: Product[] = [
         sku: "113821503-504",
         brand: "VEWIB",
         packaging: "Set (Paar)",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/m/a/marche-pied-noir-gauche-et-droit.jpg",
+        image: marchePiedNoir,
         shortDescription:
             "Passgenaues Trittbrett-Set für VW Käfer und Käfer Cabriolet aus 1,1 mm Stahl mit KTL-Beschichtung und originalgetreuem PVC-Belag.",
         longDescription:
@@ -237,7 +243,7 @@ const mockProducts: Product[] = [
         sku: "111998031B",
         brand: "VEWIB",
         packaging: "Set",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/1/1/111998031b.jpg",
+        image: faisceauType1,
         shortDescription:
             "Kompletter VEWIB Zündkabelsatz für Typ-1-Motoren mit PVC-Außenmantel, Kupferkern und 23 cm Zündspulenkabel.",
         longDescription:
@@ -259,7 +265,7 @@ const mockProducts: Product[] = [
         sku: "021998031BQ",
         brand: "VEWIB",
         packaging: "Satz",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x800/9df78eab33525d08d6e5fb8d27136e95/0/2/021998031_1.jpg",
+        image: faisceauType4,
         shortDescription:
             "Originalgetreuer Zündkabelsatz für Typ-4-Motoren in VW Combi und Transporter T25/T3 von 08/1971 bis 12/1982.",
         longDescription:
@@ -280,7 +286,7 @@ const mockProducts: Product[] = [
         sku: "111498415A",
         brand: "VEWIB",
         packaging: "Kit",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/641x800/9df78eab33525d08d6e5fb8d27136e95/p/h/photoroom-20241014_103249_1_.jpg",
+        image: jointsBoitierDirection,
         shortDescription:
             "Dichtungssatz für 28-mm-Lenkgetriebe mit zwei Simmerringen und einer Deckeldichtung in deutscher Fertigung.",
         longDescription:
@@ -301,7 +307,7 @@ const mockProducts: Product[] = [
         sku: "111821707-478 / A 111821707-478",
         brand: "VEWIB",
         packaging: "Set (4 Stück)",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/800x600/9df78eab33525d08d6e5fb8d27136e95/1/1/111821707478.jpg",
+        image: jointsAilesBeryllgrun,
         shortDescription:
             "Vorgeschnittener Satz Kotflügeldichtungen in originalgetreuem Beryllgrün für VW Käfer Modelle von 1961 bis 1964.",
         longDescription:
@@ -322,7 +328,7 @@ const mockProducts: Product[] = [
         sku: "211953215D",
         brand: "VEWIB",
         packaging: "Stück",
-        image: "https://www.dream-machine.fr/media/catalog/product/cache/30/image/641x800/9df78eab33525d08d6e5fb8d27136e95/p/h/photoroom-20241014_113711.jpg",
+        image: relaisClignotants6V,
         shortDescription:
             "Modernisiertes 6V Blinkrelais mit 4 Anschlüssen für einen stabilen und zuverlässigen Blinkbetrieb bei klassischen VW Fahrzeugen.",
         longDescription:
@@ -497,7 +503,10 @@ export default function Catalog() {
     }, [selectedCategories, selectedSubcategories, selectedVehicles, sortBy]);
 
     return (
-        <div className="min-h-screen font-sans overflow-x-hidden pt-16" style={{ backgroundColor: "#f4f5f6" }}>
+        <div
+            className="min-h-screen font-sans overflow-x-hidden pt-16"
+            style={{ backgroundColor: "#f4f5f6" }}
+        >
             <Navbar />
 
             <section className="px-4 sm:px-6 py-12 md:py-20">
@@ -509,7 +518,10 @@ export default function Catalog() {
                         >
                             Katalog
                         </h1>
-                        <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: "#666666" }}>
+                        <p
+                            className="text-sm sm:text-base md:text-lg leading-relaxed"
+                            style={{ color: "#666666" }}
+                        >
                             Entdecken Sie unsere komplette Auswahl an Ersatzteilen für klassische Volkswagen.
                         </p>
                     </div>
@@ -548,7 +560,9 @@ export default function Catalog() {
                             <div className="flex items-center justify-between gap-3 mb-6 lg:mb-8">
                                 <div className="flex items-center gap-3">
                                     <Filter size={22} style={{ color: "#111111" }} />
-                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Filter</h2>
+                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                                        Filter
+                                    </h2>
                                 </div>
 
                                 {activeFiltersCount > 0 && (
@@ -564,17 +578,25 @@ export default function Catalog() {
                             </div>
 
                             <div className="mb-8 md:mb-10">
-                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">Kategorien</h3>
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">
+                                    Kategorien
+                                </h3>
                                 <div className="space-y-3 max-h-[320px] lg:max-h-[420px] overflow-auto pr-1 sm:pr-2">
                                     {allMainCategories.map((category) => (
-                                        <label key={category} className="flex items-start gap-3 cursor-pointer">
+                                        <label
+                                            key={category}
+                                            className="flex items-start gap-3 cursor-pointer"
+                                        >
                                             <input
                                                 type="checkbox"
                                                 checked={selectedCategories.includes(category)}
                                                 onChange={() => toggleCategory(category)}
                                                 className="mt-1 h-5 w-5 rounded border-gray-300 shrink-0"
                                             />
-                                            <span className="text-sm sm:text-base leading-relaxed break-words" style={{ color: "#222222" }}>
+                                            <span
+                                                className="text-sm sm:text-base leading-relaxed break-words"
+                                                style={{ color: "#222222" }}
+                                            >
                                                 {category}
                                             </span>
                                         </label>
@@ -583,17 +605,25 @@ export default function Catalog() {
                             </div>
 
                             <div className="mb-8 md:mb-10">
-                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">Fahrzeuge</h3>
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">
+                                    Fahrzeuge
+                                </h3>
                                 <div className="space-y-3">
                                     {vehicles.map((vehicle) => (
-                                        <label key={vehicle} className="flex items-start gap-3 cursor-pointer">
+                                        <label
+                                            key={vehicle}
+                                            className="flex items-start gap-3 cursor-pointer"
+                                        >
                                             <input
                                                 type="checkbox"
                                                 checked={selectedVehicles.includes(vehicle)}
                                                 onChange={() => toggleVehicle(vehicle)}
                                                 className="mt-1 h-5 w-5 rounded border-gray-300 shrink-0"
                                             />
-                                            <span className="text-sm sm:text-base leading-relaxed break-words" style={{ color: "#222222" }}>
+                                            <span
+                                                className="text-sm sm:text-base leading-relaxed break-words"
+                                                style={{ color: "#222222" }}
+                                            >
                                                 {vehicle}
                                             </span>
                                         </label>
@@ -602,11 +632,15 @@ export default function Catalog() {
                             </div>
 
                             <div>
-                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">Unterkategorien</h3>
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5">
+                                    Unterkategorien
+                                </h3>
                                 <div className="space-y-5 sm:space-y-6 max-h-[360px] lg:max-h-[520px] overflow-auto pr-1 sm:pr-2">
                                     {categoryTree.map((group) => {
                                         const isExpanded = expandedGroups.includes(group.title);
-                                        const visibleItems = isExpanded ? group.items : group.items.slice(0, 4);
+                                        const visibleItems = isExpanded
+                                            ? group.items
+                                            : group.items.slice(0, 4);
 
                                         return (
                                             <div key={group.title}>
@@ -621,7 +655,8 @@ export default function Catalog() {
 
                                                 <div className="space-y-2">
                                                     {visibleItems.map((item) => {
-                                                        const active = selectedSubcategories.includes(item);
+                                                        const active =
+                                                            selectedSubcategories.includes(item);
 
                                                         return (
                                                             <button
@@ -661,7 +696,10 @@ export default function Catalog() {
 
                         <div className="min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                                <p className="text-lg sm:text-2xl" style={{ color: "#444444" }}>
+                                <p
+                                    className="text-lg sm:text-2xl"
+                                    style={{ color: "#444444" }}
+                                >
                                     {filteredProducts.length} Produkte gefunden
                                 </p>
 
@@ -686,6 +724,7 @@ export default function Catalog() {
                                         <option value="price-asc">Preis aufsteigend</option>
                                         <option value="price-desc">Preis absteigend</option>
                                     </select>
+
                                     <ChevronDown
                                         size={18}
                                         className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
@@ -742,12 +781,19 @@ export default function Catalog() {
                                                     {product.title}
                                                 </h3>
 
-                                                <p className="text-sm mb-2 leading-relaxed" style={{ color: "#666666" }}>
+                                                <p
+                                                    className="text-sm mb-2 leading-relaxed"
+                                                    style={{ color: "#666666" }}
+                                                >
                                                     {product.subtitle}
                                                 </p>
 
-                                                <p className="text-sm mb-3 leading-relaxed break-words" style={{ color: "#888888" }}>
-                                                    {product.vehicle.join(" • ")} • {product.subcategory}
+                                                <p
+                                                    className="text-sm mb-3 leading-relaxed break-words"
+                                                    style={{ color: "#888888" }}
+                                                >
+                                                    {product.vehicle.join(" • ")} •{" "}
+                                                    {product.subcategory}
                                                 </p>
 
                                                 <div className="mb-4">
@@ -763,7 +809,10 @@ export default function Catalog() {
                                                 </div>
 
                                                 <div className="flex flex-col xs:flex-row sm:flex-col md:flex-row items-start xs:items-center sm:items-start md:items-center justify-between mt-auto gap-3 sm:gap-4">
-                                                    <span className="text-lg font-bold text-gray-900">{product.price}</span>
+                                                    <span className="text-lg font-bold text-gray-900">
+                                                        {product.price}
+                                                    </span>
+
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
@@ -792,11 +841,18 @@ export default function Catalog() {
                                 >
                                     <h3
                                         className="text-2xl font-bold mb-3"
-                                        style={{ fontFamily: "'Georgia', serif", color: "#15415a" }}
+                                        style={{
+                                            fontFamily: "'Georgia', serif",
+                                            color: "#15415a",
+                                        }}
                                     >
                                         Keine Produkte gefunden
                                     </h3>
-                                    <p className="text-sm sm:text-base leading-relaxed" style={{ color: "#666666" }}>
+
+                                    <p
+                                        className="text-sm sm:text-base leading-relaxed"
+                                        style={{ color: "#666666" }}
+                                    >
                                         Bitte passen Sie Ihre Filter an, um weitere Ergebnisse zu sehen.
                                     </p>
                                 </div>
